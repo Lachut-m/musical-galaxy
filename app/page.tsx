@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Space_Grotesk } from 'next/font/google'
 
-// STYL AESTHETIC
 const spaceFont = Space_Grotesk({ 
   weight: '700', 
   subsets: ['latin'],
@@ -12,7 +11,7 @@ const spaceFont = Space_Grotesk({
 // --- KONFIGURACJA ---
 const ROUND_TIME = 30;
 
-// --- DANE (Czyste nazwy, bez PL/US) ---
+// --- DANE ---
 const CATEGORIES_LIST = [
   { id: 'polski-rap-modern', name: 'Polski Rap', gradient: 'linear-gradient(135deg, #141E30, #243B55)', icon: '🎤' },
   { id: 'dad-music', name: 'Dad Music', gradient: 'linear-gradient(135deg, #2C3E50, #4CA1AF)', icon: '🎸' },
@@ -224,7 +223,6 @@ export default function Home() {
   const [guessTitle, setGuessTitle] = useState(false);
   const [guessArtist, setGuessArtist] = useState(false);
   const [userGuess, setUserGuess] = useState("");
-  // DYNAMICZNY LIMIT RUND
   const [roundsTarget, setRoundsTarget] = useState(15);
 
   // --- EFEKT TŁA ---
@@ -572,6 +570,7 @@ export default function Home() {
                 {gameState === "PLAYING" && (
                   <>
                     <form id="guess-form" onSubmit={handleSubmit}>
+                      {/* --- NAPRAWIONY INPUT --- */}
                       <input 
                         ref={inputRef} 
                         type="text" 
@@ -588,7 +587,7 @@ export default function Home() {
                           fontSize: "1.2rem", 
                           outline: "none", 
                           textAlign: "center", 
-                          border: "1px solid rgba(255,255,255,0.2)", 
+                          border: "1px solid rgba(255,255,255,0.2)", // Zostawiony tylko jeden border
                           transition: "0.3s" 
                         }} 
                         onFocus={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"} 

@@ -1,192 +1,155 @@
 import { NextResponse } from 'next/server';
 
-// 1. BAZA DANYCH - SZTYWNE LISTY
+// BAZA DANYCH - SZTYWNE LISTY UTWORÓW
+// Serwer szuka DOKŁADNIE tych fraz.
 const CATEGORIES: Record<string, string[]> = {
   
   // --- PLAYLISTY (15 RUND) ---
   'dad-music': [
-    "Scorpions Wind Of Change", "Journey Don't Stop Believin'", "Aerosmith Dream On", "Foreigner I Want to Know What Love Is", "U2 With Or Without You", 
-    "Red Hot Chili Peppers Snow (Hey Oh)", "U2 I Still Haven't Found What I'm Looking For", "Kansas Dust in the Wind", "The Police Roxanne", 
-    "Creedence Clearwater Revival Have You Ever Seen The Rain", "Tears For Fears Everybody Wants To Rule The World", "Daryl Hall & John Oates Maneater", 
-    "The Rolling Stones Paint It Black", "The Police Message In A Bottle", "Lynyrd Skynyrd Free Bird", "Creedence Clearwater Revival Fortunate Son", 
-    "Fleetwood Mac Dreams", "Bruce Springsteen Dancing In the Dark", "Bruce Springsteen Born in the U.S.A.", "Bruce Springsteen Streets of Philadelphia", 
-    "Foo Fighters Everlong", "Depeche Mode Enjoy the Silence", "Depeche Mode Personal Jesus", "Eric Clapton Layla", "Dire Straits Brothers In Arms", 
-    "U2 One", "Bill Withers Ain't No Sunshine", "Chris Isaak Wicked Game", "Fleetwood Mac The Chain", "Red Hot Chili Peppers Otherside", 
-    "Guns N' Roses Knockin' On Heaven's Door", "Dire Straits Sultans Of Swing", "The Beatles Yesterday", "Grover Washington Jr Just the Two of Us", 
-    "Dire Straits Money For Nothing", "The Police Every Breath You Take", "R.E.M. Losing My Religion", "R.E.M. Everybody Hurts", "Eric Clapton Tears in Heaven", 
-    "Radiohead Creep", "Metallica Nothing Else Matters", "Oasis Wonderwall", "Goo Goo Dolls Iris", "Robbie Williams Feel", "Pink Floyd Wish You Were Here", 
-    "Genesis Jesus He Knows Me", "Phil Collins Another Day in Paradise", "Phil Collins In The Air Tonight", "Phil Collins Against All Odds", 
-    "Philip Bailey Easy Lover", "Phil Collins You Can't Hurry Love", "Alphaville Forever Young", "Alphaville Big in Japan", "Pink Floyd Another Brick in the Wall", 
-    "Status Quo In The Army Now", "Aerosmith Cryin'", "Guns N' Roses Sweet Child O' Mine", "Heart Alone", "Bonnie Tyler Total Eclipse of the Heart", 
-    "Dire Straits Walk Of Life", "Bryan Adams Summer Of '69", "Green Day Boulevard of Broken Dreams", "Foreigner Juke Box Hero", "Queen Somebody To Love", 
-    "Billy Joel Uptown Girl", "Berlin Take My Breath Away", "Cyndi Lauper Time After Time", "Queen I Want To Break Free", "George Harrison Got My Mind Set On You", 
-    "Nena 99 Luftballons", "Blondie Heart Of Glass", "Soft Cell Tainted Love", "Billy Joel We Didn't Start the Fire", "Billy Joel Piano Man", 
-    "Elton John Rocket Man", "Michael Jackson Black or White", "Electric Light Orchestra Mr. Blue Sky", "Sting Fields Of Gold", "Sting Englishman In New York", 
-    "Sting Fragile", "Sting Desert Rose", "Sting Shape Of My Heart", "Queen Killer Queen", "Queen Bohemian Rhapsody", "Queen Don't Stop Me Now", 
-    "Queen Under Pressure", "Queen Another One Bites The Dust", "Kings of Leon Sex on Fire", "Kings of Leon Use Somebody", "Red Hot Chili Peppers Can't Stop", 
-    "Red Hot Chili Peppers Scar Tissue", "Red Hot Chili Peppers Californication", "Red Hot Chili Peppers Under the Bridge", "Linkin Park In the End", 
-    "Linkin Park Numb", "Linkin Park Somewhere I Belong", "Linkin Park What I've Done", "Linkin Park Faint", "The Verve Bitter Sweet Symphony", 
-    "Eagles Hotel California", "TOTO Hold the Line", "TOTO Africa", "Led Zeppelin Stairway to Heaven", "The Cranberries Zombie", 
-    "Rod Stewart Da Ya Think I'm Sexy", "AC/DC Highway to Hell", "Madonna La Isla Bonita", "Survivor Eye of the Tiger", "Roxette The Look", 
-    "Freddie Mercury I Was Born to Love You", "Boney M Rivers of Babylon", "The Clash London Calling", "U2 Sunday Bloody Sunday", "David Bowie Starman", 
-    "U2 Beautiful Day", "The Killers Mr. Brightside", "David Bowie Space Oddity", "Gorillaz Clint Eastwood", "Kansas Carry on Wayward Son", "Sade Kiss of Life",
-    "Dead Or Alive You Spin Me Round", "Fleetwood Mac Everywhere", "Alannah Myles Black Velvet", "Michael Jackson Billie Jean", "Rockwell Somebody's Watching Me",
-    "Queen I Want It All", "Nirvana Smells Like Teen Spirit", "The Cure Boys Don't Cry", "Elton John Sacrifice", "UB40 Red Red Wine", "Sade Smooth Operator",
-    "Seal Kiss from a Rose", "Midnight Oil Beds Are Burning", "Omega Gyongyhaju lany", "Murray Head One Night In Bangkok", "Frankie Goes To Hollywood Relax",
-    "Spin Doctors Two Princes", "Elton John I'm Still Standing", "The Outfield Your Love", "Big Mountain Baby I Love Your Way", 
-    "Michael Jackson The Way You Make Me Feel", "Michael Jackson Smooth Criminal", "Men At Work Who Can It Be Now", "Men At Work Down Under"
+    "The Chain - 2004 Remaster Fleetwood Mac", "Otherside Red Hot Chili Peppers", "Knockin' On Heaven's Door Guns N' Roses", 
+    "Layla - Acoustic Eric Clapton", "Sultans Of Swing Dire Straits", "Brothers In Arms Dire Straits", "Yesterday - Remastered 2009 The Beatles", 
+    "Just the Two of Us Grover Washington, Jr.", "Money For Nothing Dire Straits", "Every Breath You Take The Police", "Losing My Religion R.E.M.", 
+    "Everybody Hurts R.E.M.", "Enjoy the Silence Depeche Mode", "Tears in Heaven Eric Clapton", "Creep Radiohead", "Nothing Else Matters Metallica", 
+    "Wonderwall Oasis", "Iris The Goo Goo Dolls", "Feel Robbie Williams", "Wish You Were Here Pink Floyd", "Jesus He Knows Me Genesis", 
+    "Another Day in Paradise Phil Collins", "In The Air Tonight Phil Collins", "Against All Odds Phil Collins", "Easy Lover Philip Bailey", 
+    "You Can't Hurry Love Phil Collins", "Fields Of Gold Sting", "Englishman In New York Sting", "Fragile Sting", "Desert Rose Sting", 
+    "Shape Of My Heart Sting", "Killer Queen Queen", "Bohemian Rhapsody Queen", "Don't Stop Me Now Queen", "Under Pressure Queen", 
+    "Another One Bites The Dust Queen", "Somebody To Love Queen", "Sex on Fire Kings of Leon", "Use Somebody Kings of Leon", "Can't Stop Red Hot Chili Peppers", 
+    "Scar Tissue Red Hot Chili Peppers", "Californication Red Hot Chili Peppers", "Under the Bridge Red Hot Chili Peppers", "In the End Linkin Park", 
+    "Numb Linkin Park", "Somewhere I Belong Linkin Park", "What I've Done Linkin Park", "Faint Linkin Park", "Bitter Sweet Symphony The Verve", 
+    "Hotel California Eagles", "Hold the Line TOTO", "Africa TOTO", "Rocket Man Elton John", "Stairway to Heaven Led Zeppelin", "Wish You Were Here Pink Floyd", 
+    "Zombie The Cranberries", "Wind Of Change Scorpions", "Don't Stop Believin' Journey", "Dream On Aerosmith", "I Want to Know What Love Is Foreigner", 
+    "With Or Without You U2", "Snow (Hey Oh) Red Hot Chili Peppers", "I Still Haven't Found What I'm Looking For U2", "Dust in the Wind Kansas", 
+    "Roxanne The Police", "Have You Ever Seen The Rain CCR", "Everybody Wants To Rule The World Tears For Fears", "Maneater Daryl Hall & John Oates", 
+    "Paint It, Black The Rolling Stones", "Message In A Bottle The Police", "Free Bird Lynyrd Skynyrd", "Fortunate Son CCR", "Dreams Fleetwood Mac", 
+    "Dancing In the Dark Bruce Springsteen", "Born in the U.S.A. Bruce Springsteen", "Streets of Philadelphia Bruce Springsteen", "Everlong Foo Fighters", 
+    "Enjoy the Silence Depeche Mode", "Personal Jesus Depeche Mode", "Layla Eric Clapton", "Brothers In Arms Dire Straits", "One U2", "Ain't No Sunshine Bill Withers", 
+    "Wicked Game Chris Isaak", "Forever Young Alphaville", "Big in Japan Alphaville", "Another Brick in the Wall Pink Floyd", "In The Army Now Status Quo", 
+    "Cryin' Aerosmith", "Sweet Child O' Mine Guns N' Roses", "Alone Heart", "Total Eclipse of the Heart Bonnie Tyler", "Walk Of Life Dire Straits", 
+    "Summer Of '69 Bryan Adams", "Boulevard of Broken Dreams Green Day", "Juke Box Hero Foreigner", "Somebody To Love Queen", "Uptown Girl Billy Joel", 
+    "Take My Breath Away Berlin", "Time After Time Cyndi Lauper", "I Want To Break Free Queen", "Got My Mind Set On You George Harrison", "99 Luftballons Nena", 
+    "Heart Of Glass Blondie", "Tainted Love Soft Cell", "Don't Stop Believin' Journey", "We Didn't Start the Fire Billy Joel", "Piano Man Billy Joel", 
+    "Rocket Man Elton John", "Black or White Michael Jackson", "Mr. Blue Sky ELO", "You Spin Me Round Dead Or Alive", "Everywhere Fleetwood Mac", 
+    "Black Velvet Alannah Myles", "Billie Jean Michael Jackson", "Somebody's Watching Me Rockwell", "I Want It All Queen", "Smells Like Teen Spirit Nirvana", 
+    "Personal Jesus Depeche Mode", "Boys Don't Cry The Cure", "Sacrifice Elton John", "Red Red Wine UB40", "Smooth Operator Sade", "Kiss from a Rose Seal", 
+    "Don't Stop Fleetwood Mac", "Beds Are Burning Midnight Oil", "Walk Of Life Dire Straits", "Gyongyhaju lany Omega", "One Night In Bangkok Murray Head", 
+    "Relax Frankie Goes To Hollywood", "Two Princes Spin Doctors", "I'm Still Standing Elton John", "Your Love The Outfield", "Baby, I Love Your Way Big Mountain", 
+    "The Way You Make Me Feel Michael Jackson", "Smooth Criminal Michael Jackson", "Who Can It Be Now? Men At Work", "Down Under Men At Work", 
+    "Da Ya Think I'm Sexy? Rod Stewart", "Highway to Hell AC/DC", "In The Army Now Status Quo", "La Isla Bonita Madonna", "Eye of the Tiger Survivor", 
+    "Nothing Else Matters Metallica", "The Look Roxette", "I Was Born to Love You Freddie Mercury", "Englishman In New York Sting", "Rivers of Babylon Boney M.", 
+    "London Calling The Clash", "Sunday Bloody Sunday U2", "Starman David Bowie", "Beautiful Day U2", "Mr. Brightside The Killers", "Space Oddity David Bowie", 
+    "Clint Eastwood Gorillaz", "Carry on Wayward Son Kansas", "Kiss of Life Sade"
   ],
 
   'polski-rap-modern': [
-    "Ralph Kaminski 2009", "Otsochodzi WWA Melanż", "OKI Trendsetting", "Taco Hemingway Następna stacja", "Quebonafide BUBBLETEA", 
-    "Bedoes 2115 Rewolucja Romantyczna", "Fagata WOW", "Dawid Podsiadło Trójkąty i Kwadraty", "Mata 2001", "Bungee FIKU MIKU", 
-    "Jeden Osiem L Jak zapomnieć", "Fukaj Zabiorę Cię Tam", "BROKIES PUK PUK", "Kizo Myto", "Taco Hemingway Bakayoko", 
-    "kuqe 2115 taki mały ja", "Sentino Lato", "Belmondawg Pappardelle all'arrabbiata", "Bedoes 2115 05:05", "White 2115 Za tych co nie mogą", 
-    "Mata Blok", "Gibbs suma wszystkich strachów", "Trzeci Wymiar Dla Mnie Masz Stajla", "Sobel MAMA POWTARZAŁA", "Kinny Zimmer PO CO", 
-    "Otsochodzi Luty", "ReTo Billy Kid", "Fagata POW POW", "Hubert cotton candy", "Bedoes 2115 VOGUE", "rów babicze BERLIN2023", 
-    "Kizo KIEROWNIK", "Mata Tango", "Guzior FALA", "Dawid Podsiadło mori", "Białas PDW", "Otsochodzi RAP", "sanah Nic dwa razy", 
-    "Taco Hemingway Polskie Tango", "Kaz Bałagane Multisport", "Bedoes 2115 Wschód", "Tymek Ostatni", "Myslovitz Scenariusz dla moich sąsiadów", 
-    "Mata Żółte flamastry i grube katechetki", "Paktofonika Jestem Bogiem", "Young Leosia Ej Agatka", "Wac Toja BOGOTA", "Malik Montana 1-WSZY NOS", 
-    "Medusa Faraon", "OKI ILE LAT", "Szpaku Plaster", "Majszi MIŁOŚĆ ZA PIENIĄDZE", "Rest Dixon37 Havana", 
-    "chillwagon @", "Żabson Sexoholik", "Paluch Szaman", "Kacper HTA Słońce Cały Rok", "Malik Montana Wychowanek Getta", "club2020 Malibu Barbie", 
-    "Pusher Leje Wina", "Young Leosia SOBOTA WIECZÓR", "Sentino Vitalyi", "Żabson Puerto Bounce", "Sobel SEXTAPE", "Mata KAMIKAZE", 
-    "Sentino CASABLANCA", "MIÜ dopóki się nie znudzisz", "Hellfield FENDI", "Bajorson Bailando", "Bungee TAK TO LATA", "Mata NIENAWIDZĘ BYĆ W KLUBIE", 
-    "Żabson COWABONGA", "Kizo Lot", "Medusa La Vida Bella", "Mata BEZ NIKOGO OBOK", "Majki Uno Momento", "Young Leosia Jungle Girl", 
-    "PRO8L3M Ground Zero", "White 2115 RiRi", "Mr. Polska Złote Tarasy", "Hellfield Wszyscy w Gucci", "Wac Toja Karmel", "francis 1DAY IN LA", 
-    "Otsochodzi 300 BANIEK", "SVM!R NDA", "Sobel CHA CHA", "Kajtek W co ja się wpakowałem", "2115 WEEKEND 2115", "MIÜ PASEK PLAYBOYA", 
-    "730 Huncho Ona Mówi", "SVM!R MIEJSKI MARATON", "Bedoes 2115 Nadchodzi lato", "OKI NA ZAWSZE MAŁOLAT", "Sentino MARBELLA", "SVM!R MONOPOL", 
-    "Waima RING RING", "Malik Montana Dior", "Kaz Bałagane Trendsetter", "OKI Jeżyk", "OKI JEREMY SOCHAN", "Otsochodzi WSZYSTKO MIJA", 
-    "wiktorek no i poszło", "Young Igi Bestia", "Rogal DDL Dziwki Dragi Lasery", "vkie DAM CI PORADY", "Aleshen Atlanta", 
-    "2115 TURYSTA", "Żabson PRZEKAZ MYŚLI", "Kizo Fitness", "Malik Montana 911", "Żabson Nie mam czasu na wakacje", 
-    "Kali 30 km/h", "Avi AMG", "Malik Montana Rundki", "OKI SPRZEDAŁEM SIĘ", "Diho Szyby", "club2020 Landlord", "White 2115 18", 
-    "Dudek P56 California", "Sentino Rio", "OKI AGENT47", "Yung Adisz WWA NA KXKSIE", "Młody West Bez promo", "Mata To tylko wiosna", 
-    "OKI Worki W Tłum", "Żabson Trapczan", "slowez NIE BĘDĘ ZA NIC PRZEPRASZAĆ", "Małach Nie dbam", "Rufuz PANAMA", "Medusa GLOW UP", 
-    "Malik Montana Generał", "Taco Hemingway W PIĄTKI LEŻĘ W WANNIE", "Paktofonika Chwile Ulotne", "Gibbs Pogoda Drinki Plaża"
+    "2009 Ralph Kaminski", "WWA Melanż Otsochodzi", "Trendsetting OKI", "Następna stacja Taco Hemingway", "BUBBLETEA Quebonafide", 
+    "Rewolucja Romantyczna Bedoes 2115", "WOW Fagata", "Trójkąty i Kwadraty Dawid Podsiadło", "2001 Mata", "FIKU MIKU Bungee", 
+    "Jak zapomnieć Jeden Osiem L", "Zabiorę Cię Tam Fukaj", "PUK PUK BROKIES", "Myto Kizo", "Bakayoko Taco Hemingway", 
+    "taki mały ja kuqe 2115", "Lato Sentino", "Pappardelle all'arrabbiata Belmondawg", "05:05 Bedoes 2115", "Za tych co nie mogą White 2115", 
+    "Blok Mata", "suma wszystkich strachów Gibbs", "Dla Mnie Masz Stajla Trzeci Wymiar", "MAMA POWTARZAŁA Sobel", "PO CO? Kinny Zimmer", 
+    "Luty Otsochodzi", "Billy Kid ReTo", "POW POW Fagata", "cotton candy Hubert.", "VOGUE Bedoes 2115", "BERLIN2023 rów babicze", 
+    "KIEROWNIK Kizo", "Tango Mata", "FALA Guzior", "mori Dawid Podsiadło", "PDW Białas", "RAP Otsochodzi", "Nic dwa razy sanah", 
+    "Polskie Tango Taco Hemingway", "Multisport Kaz Bałagane", "Wschód Bedoes 2115", "Ostatni Tymek", "Scenariusz dla moich sąsiadów Myslovitz", 
+    "Żółte flamastry i grube katechetki Mata", "Jestem Bogiem Paktofonika", "Ej Agatka Young Leosia", "BILLY 6ix9ine", "BOGOTA Wac Toja", 
+    "1-WSZY NOS Malik Montana", "Faraon Medusa", "CZEMU NIE ŚPISZ? bambi", "ILE LAT? OKI", "Plaster Szpaku", "MIŁOŚĆ ZA PIENIĄDZE Majszi", 
+    "Havana Rest Dixon37", "@ chillwagon", "Sexoholik Żabson", "Szaman Paluch", "Słońce Cały Rok Kacper HTA", "Wychowanek Getta Malik Montana", 
+    "Malibu Barbie club2020", "Leje Wina Pusher", "SOBOTA WIECZÓR Young Leosia", "Vitalyi Sentino", "Puerto Bounce Żabson", "SEXTAPE Sobel", 
+    "NAPALONE FANKI Eryk Moczko", "BRAND NEW SQ8 OKI", "MVP OKI", "Lovestory White 2115", "Tak to leciało! Otsochodzi", 
+    "W co ja się wpakowałem Kajtek", "WEEKEND 2115 2115", "PASEK PLAYBOYA MIÜ", "Ona Mówi 730 Huncho", "WWA Melanż Otsochodzi", 
+    "MIEJSKI MARATON SVM!R", "Nadchodzi lato Bedoes 2115", "NA ZAWSZE MAŁOLAT OKI", "MARBELLA Sentino", "MONOPOL SVM!R", "KIEROWNIK Kizo", 
+    "RING RING Waima", "Lato Sentino", "Dior Malik Montana", "Trendsetter Kaz Bałagane", "VOGUE Bedoes 2115", "Jeżyk! OKI", "JEREMY SOCHAN OKI", 
+    "WSZYSTKO MIJA Otsochodzi", "PG$ Young Leosia", "no i poszło wiktorek", "Wschód Bedoes 2115", "Bestia Young Igi", "05:05 Bedoes 2115", 
+    "Dziwki Dragi Lasery Rogal DDL", "DAM CI PORADY vkie", "Atlanta Aleshen", "TURYSTA 2115", "PRZEKAZ MYŚLI Żabson", "Fitness Kizo", 
+    "TO NIE MA ZNACZENIA bambi", "911 Malik Montana", "Nie mam czasu na wakacje Żabson", "30 km/h Kali", "AMG Avi", "Rundki Malik Montana", 
+    "SPRZEDAŁEM SIĘ OKI", "Szyby Diho", "Landlord club2020", "18 White 2115", "California Dudek P56", "Rio Sentino", "Za tych co nie mogą White 2115", 
+    "PO CO? Kinny Zimmer", "AGENT47 OKI", "WWA NA KXKSIE Yung Adisz", "Bez promo Młody West", "To tylko wiosna Mata", "Worki W Tłum OKI", 
+    "Trapczan Żabson", "NIE BĘDĘ ZA NIC PRZEPRASZAĆ slowez", "Nie dbam Małach", "MIŁOŚĆ ZA PIENIĄDZE Majszi", "PANAMA Rufuz", 
+    "California Dudek P56", "GLOW UP Medusa", "PO CO? Kinny Zimmer", "Generał Malik Montana", "W PIĄTKI LEŻĘ W WANNIE Taco Hemingway", 
+    "Chwile Ulotne Paktofonika", "Pogoda, Drinki, Plaża Gibbs"
   ],
 
-  // --- ARTYŚCI (5 RUND - TOP HITY) ---
+  // --- ARTYŚCI (5 RUND - SZTYWNE LISTY ZE ZDJĘĆ) ---
   
   'artist-otsochodzi': [
-    "Otsochodzi Nie, nie", "Otsochodzi Nowy Kolor", "Otsochodzi WWA Melanż", 
-     "Otsochodzi Euforia", "Otsochodzi Tarcho Terror", "OIO amerykańskie teledyski", "OIO MVP",
-     "Otsochodzi 300 BANIEK", "Otsochodzi Luty", "Otsochodzi RAP",
-     "Otsochodzi Worki w tłum", "Otsochodzi Luty", "Otsochodzi tak to leciało", "Otsochodzi Przypadkiem", "Otsochodzi Kiedys cie znajde"
+    "Luty Otsochodzi", "NAWETT JAK Otsochodzi", "Tak to leciało! Otsochodzi", "300 BANIEK Otsochodzi", "Przypadkiem Oki", 
+    "Nie / nie Otsochodzi", "New York Freestyle Otsochodzi", "Mów Otsochodzi", "MVP Oki", "KIEDYŚ CIĘ ZNAJDĘ Otsochodzi", 
+    "RAP Otsochodzi", "Euforia Otsochodzi", "WWA Melanż Otsochodzi", "Cichosza Taco Hemingway", "Kochaj Mnie Albo Rzuć Otsochodzi", 
+    "BÓL Otsochodzi", "Tarcho Terror Otsochodzi", "O.N.A club2020", "Czarne Chmury Otsochodzi", "Landlord club2020", 
+    "Waka Flocka Otsochodzi", "WSZYSTKO MIJA Otsochodzi", "0:00 Otsochodzi", "Amerykańskie Teledyski Oki", "KFC Otsochodzi", 
+    "Room service Louis Villain", "Ej, mała! club2020", "Worki W Tłum Oki", "Poj*bane Stany Otsochodzi", "Brud i krew Gruby Mielzky", 
+    "Dla mnie Otsochodzi", "PUK PUK PUK Oki", "Nowy Kolor Otsochodzi", "Moonwalk Oki", "PATRZ NA NIEBO JAK PIERDOLNIE Otsochodzi", 
+    "Malibu Barbie club2020", "Uzależniony Smolasty", "Biggie Oki", "Worldwide Otsochodzi", "club2020 club2020", "SumieNIE Otsochodzi"
+  ],
+
+  'artist-bambi': [
+    "WIDZIAŁAM JUŻ WSZYSTKO bambi", "1DAY IN LA francis", "Woda Księżycowa Kubi Producent", "NIE MA CIĘ Fukaj", 
+    "CZEMU NIE ŚPISZ? bambi", "RUW BAMBICZE bambi", "Przester Young Leosia", "BFF bambi", "MILLIE WALKY bambi", 
+    "TO NIE MA ZNACZENIA bambi", "zostań, proszę kuqe 2115", "LECĘ BO CHCĘ Deemz", "Te numery Young Leosia", 
+    "TLEN bambi", "GRAWITACJA bambi", "MADONNA bambi", "PG$ Young Leosia", "NIE CHCESZ MNIE bambi", 
+    "KSZTAŁT MIŁOŚCI Young Igi", "VUELO bambi", "Double Match Young Leosia", "CLOUDS bambi", "RED BULL 64 BARS bambi", 
+    "ZA DUŻO W SZYJE bambi", "Bad Bunny SB Maffija", "NUMBER ONE bambi", "Heart Sped Up Ely Oaks", "LATAWCE bambi", 
+    "Skippers Young Leosia", "chrypki głos nie od fajek bambi", "Papier Young Leosia", "IRL bambi", "Bletki bambi", 
+    "ICON bambi", "Kot Schrödingera CatchUp", "100 Bands Dina Ayada", "COLD BOY WINNER SB Maffija", "Dobra Robota Young Leosia", 
+    "Headhunter Young Leosia", "Chwile Waima", "Zamki z piasku SB Maffija"
   ],
 
   'artist-kanye': [
-    "Kanye West Father Stretch My Hands Pt. 1", "Kanye West Devil In A New Dress", "Kanye West God Is", "Kanye West CARNIVAL",
-    "Kanye West Through The Wire", "Kanye West All Of The Lights", "Kanye West Everything I Am", "Kanye West True Love",
-    "JAY-Z No Church In The Wild", "Kanye West POWER", "Kanye West Follow God", "Kanye West BURN", "Kanye West Jukebox Joints",
-    "Kanye West On Sight", "Twista Slow Jamz", "Kanye West Monster", "Kanye West FIELD TRIP", "Kanye West Saint Pablo",
-    "Kanye West Jesus Walks", "Kanye West Moon", "Kanye West Black Skinhead", "Kanye West Otis", "Kanye West Family Business",
-    "Kanye West Praise God", "Kid Cudi Erase Me", "JAY-Z Why I Love You", "Kanye West Gorgeous", "Nas Still Dreaming",
-    "Kanye West Famous", "Katy Perry E.T.", "Kanye West Roses", "Kanye West No More Parties In LA", "Kanye West Flashing Lights",
-    "Kanye West Heartless", "Kanye West All Falls Down", "Kanye West Violent Crimes", "Kanye West Homecoming", "Kanye West Bound 2",
-    "Rihanna FourFiveSeconds", "Kanye West Ghost Town", "Kanye West I Wonder", "Kanye West Gold Digger", "JAY-Z Ni**as In Paris",
-    "JAY-Z Run This Town", "Kanye West Can't Tell Me Nothing", "Kanye West Runaway", "Kanye West Touch The Sky", "Estelle American Boy",
-    "Kanye West Stronger"
+    "Flashing Lights Kanye West", "Heartless Kanye West", "All Falls Down Kanye West", "Violent Crimes Kanye West", 
+    "Homecoming Kanye West", "Bound 2 Kanye West", "FourFiveSeconds Rihanna", "Ghost Town Kanye West", "I Wonder Kanye West", 
+    "Gold Digger Kanye West", "Ni**as In Paris JAY-Z", "Run This Town JAY-Z", "Can't Tell Me Nothing Kanye West", 
+    "Runaway Kanye West", "Touch The Sky Kanye West", "American Boy Estelle", "Stronger Kanye West", 
+    "Father Stretch My Hands Pt. 1 Kanye West", "Devil In A New Dress Kanye West", "God Is Kanye West", "CARNIVAL Kanye West", 
+    "Through The Wire Kanye West", "All Of The Lights Kanye West", "Everything I Am Kanye West", "True Love Kanye West", 
+    "No Church In The Wild JAY-Z", "POWER Kanye West", "Follow God Kanye West", "BURN Kanye West", "Jukebox Joints A$AP Rocky", 
+    "On Sight Kanye West", "Slow Jamz Twista", "Monster Kanye West", "FIELD TRIP Kanye West", "Saint Pablo Kanye West", 
+    "Jesus Walks Kanye West", "Moon Kanye West", "Black Skinhead Kanye West", "Otis JAY-Z", "Family Business Kanye West", 
+    "Praise God Kanye West", "Erase Me Kid Cudi", "Why I Love You JAY-Z", "Gorgeous Kanye West", "Still Dreaming Nas", 
+    "Famous Kanye West", "E.T. Katy Perry", "Roses Kanye West", "No More Parties In LA Kanye West"
   ],
 
+  // --- Reszta artystów (dla porządku - też sztywne listy) ---
   'artist-kendrick': [
-    "Kendrick Lamar HUMBLE.", "Kendrick Lamar DNA.", "Kendrick Lamar Swimming Pools (Drank)", "Kendrick Lamar Alright", "Kendrick Lamar King Kunta",
-    "Kendrick Lamar Bitch, Don't Kill My Vibe", "Kendrick Lamar Money Trees", "Kendrick Lamar LOVE. FEAT. ZACARI", "Kendrick Lamar LOYALTY. FEAT. RIHANNA", 
-    "Kendrick Lamar All The Stars", "Kendrick Lamar N95", "Kendrick Lamar United In Grief", "Kendrick Lamar Father Time", "Kendrick Lamar Rich Spirit",
-    "Kendrick Lamar Count Me Out", "Kendrick Lamar Silent Hill", "Kendrick Lamar m.A.A.d city", "Kendrick Lamar Poetic Justice", 
-    "Kendrick Lamar i", "Kendrick Lamar King's Dead", "Kendrick Lamar Family Ties", "Kendrick Lamar ELEMENT.", "Kendrick Lamar YAH.",
-    "Kendrick Lamar FEAR.", "Kendrick Lamar GOD.", "Kendrick Lamar DUCKWORTH.", "Kendrick Lamar Backseat Freestyle", "Kendrick Lamar A.D.H.D",
-    "Kendrick Lamar HiiiPoWeR", "Kendrick Lamar Wesley's Theory", "Kendrick Lamar For Free?", "Kendrick Lamar Institutionalized", "Kendrick Lamar The Blacker The Berry"
+    "Kendrick Lamar HUMBLE.", "Kendrick Lamar DNA.", "Kendrick Lamar Swimming Pools (Drank)", "Kendrick Lamar Alright", 
+    "Kendrick Lamar King Kunta", "Kendrick Lamar Bitch, Don't Kill My Vibe", "Kendrick Lamar Money Trees"
   ],
-
-  'artist-podsiadlo': [
-    "Dawid Podsiadło Małomiasteczkowy", "Dawid Podsiadło Nie ma fal", "Dawid Podsiadło Trofea", "Dawid Podsiadło Najnowszy klip", "Dawid Podsiadło Matylda",
-    "Dawid Podsiadło Pastempomat", "Dawid Podsiadło W dobrą stronę", "Dawid Podsiadło Trójkąty i kwadraty", "Dawid Podsiadło Nieznajomy", "Dawid Podsiadło mori",
-    "Dawid Podsiadło To co masz Ty!", "Dawid Podsiadło D I A B L E", "Dawid Podsiadło wirus", "Dawid Podsiadło millenium", "Dawid Podsiadło Szarość i róż",
-    "Dawid Podsiadło O czym śnisz?", "Dawid Podsiadło Rozpoznaję w Tobie coś", "Dawid Podsiadło Co mówimy?", "Dawid Podsiadło Nie kłami", "Dawid Podsiadło POST",
-    "Dawid Podsiadło Halo", "Dawid Podsiadło Fantasmagoria", "Dawid Podsiadło Ostatnia nadzieja", "Dawid Podsiadło I Ciebie też, bardzo", "Dawid Podsiadło Całe szczęście",
-    "Dawid Podsiadło PKP", "Dawid Podsiadło Bóg", "Dawid Podsiadło Projekt 19", "Dawid Podsiadło No", "Dawid Podsiadło Forest", "Dawid Podsiadło Lis", "Dawid Podsiadło Bela"
-  ],
-
   'artist-eminem': [
     "Eminem Lose Yourself", "Eminem Without Me", "Eminem The Real Slim Shady", "Eminem Stan", "Eminem Mockingbird",
-    "Eminem Love The Way You Lie", "Eminem Rap God", "Eminem Godzilla", "Eminem Not Afraid", "Eminem 'Till I Collapse",
-    "Eminem Venom", "Eminem The Monster", "Eminem My Name Is", "Eminem When I'm Gone", "Eminem Sing For The Moment",
-    "Eminem Cleanin' Out My Closet", "Eminem Superman", "Eminem Space Bound", "Eminem Berzerk", "Eminem Beautiful",
-    "Eminem Like Toy Soldiers", "Eminem Shake That", "Eminem No Love", "Eminem River"
+    "Eminem Love The Way You Lie", "Eminem Rap God", "Eminem Godzilla", "Eminem Not Afraid"
   ],
-
   'artist-weeknd': [
-    "The Weeknd Blinding Lights", "The Weeknd Starboy", "The Weeknd The Hills", "The Weeknd Save Your Tears", "The Weeknd Can't Feel My Face",
-    "The Weeknd I Feel It Coming", "The Weeknd Die For You", "The Weeknd Call Out My Name", "The Weeknd Heartless", "The Weeknd After Hours",
-    "The Weeknd Earned It", "The Weeknd Wicked Games", "The Weeknd Often", "The Weeknd In Your Eyes", "The Weeknd Reminder",
-    "The Weeknd Party Monster", "The Weeknd Acquainted", "The Weeknd Pray For Me", "The Weeknd Moth To A Flame", "The Weeknd Take My Breath"
+    "The Weeknd Blinding Lights", "The Weeknd Starboy", "The Weeknd The Hills", "The Weeknd Save Your Tears", 
+    "The Weeknd Can't Feel My Face", "The Weeknd I Feel It Coming", "The Weeknd Die For You"
   ],
-
+  'artist-podsiadlo': [
+    "Dawid Podsiadło Małomiasteczkowy", "Dawid Podsiadło Nie ma fal", "Dawid Podsiadło Trofea", "Dawid Podsiadło Matylda", 
+    "Dawid Podsiadło Pastempomat", "Dawid Podsiadło W dobrą stronę", "Dawid Podsiadło Trójkąty i kwadraty"
+  ],
   'artist-sanah': [
-    "sanah Szampan", "sanah Ale jazz!", "sanah Melodia", "sanah Ten Stan", "sanah Kolońska i szlugi",
-    "sanah Eldorado", "sanah Nic dwa razy", "sanah Marcepan", "sanah Hip Hip Hura", "sanah Oczy",
-    "sanah Etcetera", "sanah Proszę pana", "sanah Królowa dram", "sanah No sory", "sanah Irenka",
-    "sanah 2:00", "sanah Cząstka", "sanah Aniołom szepnij to", "sanah Pocałunki", "sanah Najlepszy dzień w moim życiu",
-    "sanah Siebie zapytasz"
+    "sanah Szampan", "sanah Ale jazz!", "sanah Melodia", "sanah Ten Stan", "sanah Kolońska i szlugi", "sanah Eldorado"
   ],
-
-  'artist-queen': [
-    "Queen Bohemian Rhapsody", "Queen Don't Stop Me Now", "Queen Another One Bites The Dust", "Queen Under Pressure", "Queen We Will Rock You",
-    "Queen We Are The Champions", "Queen Radio Ga Ga", "Queen Somebody To Love", "Queen I Want To Break Free", "Queen Killer Queen",
-    "Queen Crazy Little Thing Called Love", "Queen The Show Must Go On", "Queen Love of My Life", "Queen Who Wants to Live Forever", "Queen Fat Bottomed Girls",
-    "Queen Bicycle Race", "Queen A Kind of Magic", "Queen One Vision", "Queen Hammer to Fall", "Queen I Want It All"
-  ],
-
   'artist-taco': [
-    "Taco Hemingway Tamagotchi", "Taco Hemingway Polskie Tango", "Taco Hemingway Deszcz na betonie", "Taco Hemingway Fiji", "Taco Hemingway Nostalgia",
-    "Taco Hemingway 6 zer", "Taco Hemingway W piątki leżę w wannie", "Taco Hemingway Marsz", "Taco Hemingway Gelato", "Taco Hemingway 8 kobiet",
-    "Taco Hemingway Cafe Belga", "Taco Hemingway Kabriolety", "Taco Hemingway Wszystko jedno", "Taco Hemingway Awaria", "Taco Hemingway Chodź",
-    "Taco Hemingway Bakayoko", "Taco Hemingway Makarena Freestyle", "Taco Hemingway Pakiet Platinium"
+    "Taco Hemingway Tamagotchi", "Taco Hemingway Polskie Tango", "Taco Hemingway Deszcz na betonie", "Taco Hemingway Fiji", 
+    "Taco Hemingway Nostalgia", "Taco Hemingway 6 zer"
   ],
-
   'artist-kukon': [
-    "Kukon Miniówa", "Kukon Piję wódę i słucham Ich Troje", "Kukon Kocham Cię", "Kukon Matryca", "Kukon Cast Away",
-    "Kukon Polish Paris", "Kukon Boli serce", "Kukon Miss Me", "Kukon Afery", "Kukon Ostatni bal",
-    "Kukon Pora dla buntowników", "Kukon Sypialnia", "Kukon Dziewczyna z biblioteki", "Kukon Hard Flex Drive", "Kukon Ogrody"
+    "Kukon Miniówa", "Kukon Kocham Cię", "Kukon Matryca", "Kukon Cast Away", "Kukon Polish Paris"
   ],
-
+  'artist-queen': [
+    "Queen Bohemian Rhapsody", "Queen Don't Stop Me Now", "Queen Another One Bites The Dust", "Queen Under Pressure", 
+    "Queen We Will Rock You", "Queen We Are The Champions", "Queen Radio Ga Ga"
+  ],
   'artist-travis': [
-    "Travis Scott Sicko Mode", "Travis Scott Goosebumps", "Travis Scott Highest in the Room", "Travis Scott Butterfly Effect", "Travis Scott Antidote",
-    "Travis Scott Stargazing", "Travis Scott Fein", "Travis Scott 90210", "Travis Scott Franchise", "Travis Scott The Scotts",
-    "Travis Scott Yosemite", "Travis Scott Can't Say", "Travis Scott No Bystanders", "Travis Scott Beibs in the Trap", "Travis Scott Pick Up The Phone",
-    "Travis Scott Mamacita", "Travis Scott Upper Echelon", "Travis Scott Gatti"
+    "Travis Scott Sicko Mode", "Travis Scott Goosebumps", "Travis Scott Highest in the Room", "Travis Scott Butterfly Effect", 
+    "Travis Scott Antidote", "Travis Scott Stargazing", "Travis Scott Fein"
   ],
-
-  // --- KATEGORIE GATUNKOWE (TEŻ RĘCZNE DLA PEWNOŚCI) ---
-  'usa-rap-modern': [
-    "Travis Scott Sicko Mode", "Drake God's Plan", "Kendrick Lamar HUMBLE.", "Post Malone Rockstar", "The Weeknd Starboy", 
-    "Kanye West Stronger", "Future Mask Off", "21 Savage Bank Account", "Doja Cat Paint The Town Red", "Playboi Carti Magnolia",
-    "Drake Hotline Bling", "Cardi B Bodak Yellow", "Jack Harlow First Class", "Lil Uzi Vert XO Tour Llif3", "Migos Bad and Boujee"
-  ],
-  'usa-rap-classics': [
-    "Eminem Lose Yourself", "2Pac California Love", "The Notorious B.I.G. Juicy", "Dr. Dre Still D.R.E.", "Snoop Dogg Drop It Like It's Hot", 
-    "50 Cent In Da Club", "Jay-Z Empire State of Mind", "Ice Cube It Was A Good Day", "Outkast Ms. Jackson", "DMX X Gon' Give It To Ya",
-    "Nas N.Y. State of Mind", "Wu-Tang Clan C.R.E.A.M.", "N.W.A Straight Outta Compton", "Coolio Gangsta's Paradise", "Cypress Hill Insane in the Brain"
-  ],
-  'rock-legends': [
-    "Queen Bohemian Rhapsody", "AC/DC Back In Black", "Nirvana Smells Like Teen Spirit", "Guns N' Roses Sweet Child O' Mine", "Metallica Enter Sandman", 
-    "The Rolling Stones Paint It Black", "Red Hot Chili Peppers Californication", "Bon Jovi Livin' On A Prayer", "Linkin Park In The End", "Pink Floyd Another Brick In The Wall",
-    "System of a Down Chop Suey!", "Green Day Boulevard of Broken Dreams", "The Beatles Hey Jude", "Led Zeppelin Stairway to Heaven", "Aerosmith Dream On"
-  ],
-  'polski-rock': [
-    "Lady Pank Mniej niż zero", "Maanam Cykady na Cykladach", "Kult Arahja", "Perfect Autobiografia", "T.Love Chłopaki nie płaczą", 
-    "Myslovitz Długość dźwięku samotności", "Budka Suflera Jolka, Jolka pamiętasz", "Bajm Biała armia", "Hey Teksański", "Wilki Baśka",
-    "O.N.A. Kiedy powiem sobie dość", "Ira Nadzieja", "Chłopcy z Placu Broni O Ela", "Dżem Wehikuł czasu", "Republika Biała flaga"
-  ],
-  'pop-global-now': [
-    "Taylor Swift Shake It Off", "Harry Styles As It Was", "Dua Lipa Levitating", "Ariana Grande 7 rings", "Ed Sheeran Shape of You", 
-    "Justin Bieber Baby", "Miley Cyrus Flowers", "Billie Eilish Bad Guy", "Rihanna Umbrella", "The Weeknd Blinding Lights",
-    "Olivia Rodrigo drivers license", "Sia Chandelier", "Lady Gaga Bad Romance", "Katy Perry Firework", "Bruno Mars Uptown Funk"
-  ],
-  'tiktok-viral': [
-    "Måneskin Beggin'", "The Weeknd Blinding Lights", "Doja Cat Say So", "Glass Animals Heat Waves", "Lizzo About Damn Time", 
-    "Jack Harlow First Class", "Meghan Trainor Made You Look", "Lil Nas X Montero", "SZA Kill Bill", "Steve Lacy Bad Habit",
-    "Sabrina Carpenter Espresso", "Tate McRae Greedy", "Sam Smith Unholy", "Harry Styles As It Was", "GAYLE abcdefu"
-  ],
+  
+  // --- KATEGORIE GATUNKOWE ---
+  'usa-rap-modern': ["Travis Scott Sicko Mode", "Drake God's Plan", "Kendrick Lamar HUMBLE.", "Post Malone Rockstar", "The Weeknd Starboy"],
+  'usa-rap-classics': ["Eminem Lose Yourself", "2Pac California Love", "The Notorious B.I.G. Juicy", "Dr. Dre Still D.R.E."],
+  'rock-legends': ["Queen Bohemian Rhapsody", "AC/DC Back In Black", "Nirvana Smells Like Teen Spirit", "Guns N' Roses Sweet Child O' Mine"],
+  'polski-rock': ["Lady Pank Mniej niż zero", "Maanam Cykady na Cykladach", "Kult Arahja", "Perfect Autobiografia"],
+  'pop-global-now': ["Taylor Swift Shake It Off", "Harry Styles As It Was", "Dua Lipa Levitating", "Ariana Grande 7 rings"],
+  'tiktok-viral': ["Måneskin Beggin'", "The Weeknd Blinding Lights", "Doja Cat Say So", "Glass Animals Heat Waves"]
 };
 
 export async function GET(request: Request) {
@@ -194,19 +157,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     
-    // Jeśli nie ma kategorii, bierzemy domyślnie Pop
+    // Pobieramy listę utworów dla danej kategorii
     const tracksList = (category && CATEGORIES[category]) ? CATEGORIES[category] : CATEGORIES['pop-global-now'];
     
-    // --- WSZYSTKO JEST PLAYLISTĄ (Sztywne tytuły) ---
-    // Pobieramy każdą piosenkę DOKŁADNIE PO NAZWIE (Artist - Title)
-    // Decyzja ile piosenek losować do puli roboczej:
-    const isArtist = category?.startsWith('artist-');
-    const songsToFetch = isArtist ? 25 : 35; // Pobieramy więcej, żeby mieć zapas na błędne wyniki
-
-    // Mieszamy listę i bierzemy X pierwszych
-    const shuffledTerms = tracksList.sort(() => 0.5 - Math.random()).slice(0, songsToFetch);
+    // --- TRYB PLAYLISTA ---
+    // Pobieramy konkretne utwory z listy
+    const shuffledTerms = tracksList.sort(() => 0.5 - Math.random()).slice(0, 30);
     
-    // Pobieramy każdą piosenkę DOKŁADNIE PO NAZWIE (Artist - Title)
     const promises = shuffledTerms.map(term => 
       fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=1`)
         .then(res => res.json())
@@ -215,8 +172,6 @@ export async function GET(request: Request) {
     );
 
     const results = await Promise.all(promises);
-    
-    // Filtrujemy tylko poprawne wyniki z audio
     const validSongs = results.filter(item => item !== null && item !== undefined && item.previewUrl);
 
     return NextResponse.json({ results: validSongs });
