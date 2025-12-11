@@ -30,11 +30,13 @@ const ARTIST_CATEGORIES = [
   { id: 'artist-kanye', name: 'Kanye West', gradient: 'linear-gradient(to right, #3C3B3F, #605C3C)', icon: '🐻' },
   { id: 'artist-travis', name: 'Travis Scott', gradient: 'linear-gradient(to right, #56ab2f, #a8e063)', icon: '🌵' },
   { id: 'artist-weeknd', name: 'The Weeknd', gradient: 'linear-gradient(to right, #480048, #C04848)', icon: '🕶️' },
+  { id: 'artist-otsochodzi', name: 'Otsochodzi', gradient: 'linear-gradient(to right, #2980B9, #6DD5FA)', icon: '🧢' },
   { id: 'artist-podsiadlo', name: 'Dawid Podsiadło', gradient: 'linear-gradient(to right, #24C6DC, #514A9D)', icon: '🥸' },
   { id: 'artist-sanah', name: 'Sanah', gradient: 'linear-gradient(to right, #BA5370, #F4E2D8)', icon: '🎻' },
   { id: 'artist-taco', name: 'Taco Hemingway', gradient: 'linear-gradient(to right, #000428, #004e92)', icon: '🍷' },
   { id: 'artist-kukon', name: 'Kukon', gradient: 'linear-gradient(to right, #200122, #6f0000)', icon: '🌑' },
   { id: 'artist-queen', name: 'Queen', gradient: 'linear-gradient(to right, #870000, #190A05)', icon: '👑' },
+  { id: 'artist-bambi', name: 'bambi', gradient: 'linear-gradient(to right, #fc00ff, #00dbde)', icon: '💖' },
 ];
 
 // --- INTERAKTYWNY NAPIS ---
@@ -222,6 +224,7 @@ export default function Home() {
   const [guessTitle, setGuessTitle] = useState(false);
   const [guessArtist, setGuessArtist] = useState(false);
   const [userGuess, setUserGuess] = useState("");
+  // DYNAMICZNY LIMIT RUND
   const [roundsTarget, setRoundsTarget] = useState(15);
 
   // --- EFEKT TŁA ---
@@ -311,8 +314,9 @@ export default function Home() {
     setSongsPool([]); 
     setHasStarted(false);
     
+    // Ustawienie liczby rund (5 dla artystów, 15 dla reszty)
     if (categoryId.startsWith('artist-')) {
-        setRoundsTarget(10);
+        setRoundsTarget(5);
     } else {
         setRoundsTarget(15);
     }
@@ -329,7 +333,7 @@ export default function Home() {
       const data = await res.json();
       const validSongs = data.results.filter((item: any) => item.previewUrl && item.trackName);
       
-      const target = categoryId.startsWith('artist-') ? 10 : 15;
+      const target = categoryId.startsWith('artist-') ? 5 : 15;
 
       if (validSongs.length >= target) {
           setSongsPool(validSongs.slice(0, target));
