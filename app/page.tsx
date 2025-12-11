@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Space_Grotesk } from 'next/font/google'
 
+// STYL AESTHETIC
 const spaceFont = Space_Grotesk({ 
   weight: '700', 
   subsets: ['latin'],
@@ -11,7 +12,7 @@ const spaceFont = Space_Grotesk({
 // --- KONFIGURACJA ---
 const ROUND_TIME = 30;
 
-// --- DANE ---
+// --- DANE (Czyste nazwy) ---
 const CATEGORIES_LIST = [
   { id: 'polski-rap-modern', name: 'Polski Rap', gradient: 'linear-gradient(135deg, #141E30, #243B55)', icon: '🎤' },
   { id: 'dad-music', name: 'Dad Music', gradient: 'linear-gradient(135deg, #2C3E50, #4CA1AF)', icon: '🎸' },
@@ -36,7 +37,7 @@ const ARTIST_CATEGORIES = [
   { id: 'artist-queen', name: 'Queen', gradient: 'linear-gradient(to right, #870000, #190A05)', icon: '👑' },
 ];
 
-// --- INTERAKTYWNY NAPIS (Wersja 13.0) ---
+// --- INTERAKTYWNY NAPIS ---
 const InteractiveTitle = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -223,7 +224,7 @@ export default function Home() {
   const [userGuess, setUserGuess] = useState("");
   const [roundsTarget, setRoundsTarget] = useState(15);
 
-  // --- EFEKT TŁA (Wersja 13.0) ---
+  // --- EFEKT TŁA ---
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -310,7 +311,6 @@ export default function Home() {
     setSongsPool([]); 
     setHasStarted(false);
     
-    // Ustawienie liczby rund (10 dla artystów, 15 dla reszty)
     if (categoryId.startsWith('artist-')) {
         setRoundsTarget(10);
     } else {
@@ -354,7 +354,6 @@ export default function Home() {
     playRound(0);
   };
 
-  // --- START GRY ENTEREM ---
   useEffect(() => {
     const handleEnterStart = (e: KeyboardEvent) => {
       if (e.key === "Enter" && !hasStarted && songsPool.length > 0 && appMode === "GAME") {
@@ -569,7 +568,28 @@ export default function Home() {
                 {gameState === "PLAYING" && (
                   <>
                     <form id="guess-form" onSubmit={handleSubmit}>
-                      <input ref={inputRef} type="text" value={userGuess} onChange={(e) => setUserGuess(e.target.value)} placeholder="Wpisz tytuł lub wykonawcę..." autoComplete="off" style={{ width: "100%", padding: "15px", borderRadius: "10px", border: "none", background: "rgba(0,0,0,0.5)", color: "white", fontSize: "1.2rem", outline: "none", textAlign: "center", border: "1px solid rgba(255,255,255,0.2)" }} />
+                      <input 
+                        ref={inputRef} 
+                        type="text" 
+                        value={userGuess} 
+                        onChange={(e) => setUserGuess(e.target.value)} 
+                        placeholder="Wpisz tytuł lub wykonawcę..." 
+                        autoComplete="off" 
+                        style={{ 
+                          width: "100%", 
+                          padding: "15px", 
+                          borderRadius: "10px", 
+                          background: "rgba(0,0,0,0.5)", 
+                          color: "white", 
+                          fontSize: "1.2rem", 
+                          outline: "none", 
+                          textAlign: "center", 
+                          border: "1px solid rgba(255,255,255,0.2)", 
+                          transition: "0.3s" 
+                        }} 
+                        onFocus={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"} 
+                        onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
+                      />
                       <div style={{ marginTop: "10px", color: "#ed4245", minHeight: "24px", fontWeight: "bold", textShadow: "0 0 5px rgba(237, 66, 69, 0.5)" }}>{feedback}</div>
                     </form>
                     
@@ -596,7 +616,7 @@ export default function Home() {
                              e.currentTarget.style.boxShadow = "0 0 20px rgba(231, 76, 60, 0.6)";
                           }}
                           onMouseLeave={(e) => {
-                             e.currentTarget.style.background = "rgba(231, 76, 60, 0.1)";
+                             e.currentTarget.style.background = "rgba(255, 82, 82, 0.1)";
                              e.currentTarget.style.boxShadow = "0 0 10px rgba(231, 76, 60, 0.2)";
                           }}
                         >
