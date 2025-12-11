@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
-// BAZA DANYCH - SZTYWNE LISTY UTWORÓW
+// 1. BAZA DANYCH - SZTYWNE LISTY
 const CATEGORIES: Record<string, string[]> = {
   
-  // --- TWOJA PLAYLISTA DAD MUSIC (ZE ZDJĘĆ) ---
+  // --- PLAYLISTY (15 RUND) ---
   'dad-music': [
     "Scorpions Wind Of Change", "Journey Don't Stop Believin'", "Aerosmith Dream On", "Foreigner I Want to Know What Love Is", "U2 With Or Without You", 
     "Red Hot Chili Peppers Snow (Hey Oh)", "U2 I Still Haven't Found What I'm Looking For", "Kansas Dust in the Wind", "The Police Roxanne", 
@@ -37,7 +37,6 @@ const CATEGORIES: Record<string, string[]> = {
     "Michael Jackson The Way You Make Me Feel", "Michael Jackson Smooth Criminal", "Men At Work Who Can It Be Now", "Men At Work Down Under"
   ],
 
-  // --- TWOJA PLAYLISTA POLSKI RAP (ZE ZDJĘĆ) ---
   'polski-rap-modern': [
     "Ralph Kaminski 2009", "Otsochodzi WWA Melanż", "OKI Trendsetting", "Taco Hemingway Następna stacja", "Quebonafide BUBBLETEA", 
     "Bedoes 2115 Rewolucja Romantyczna", "Fagata WOW", "Dawid Podsiadło Trójkąty i Kwadraty", "Mata 2001", "Bungee FIKU MIKU", 
@@ -65,8 +64,15 @@ const CATEGORIES: Record<string, string[]> = {
     "Malik Montana Generał", "Taco Hemingway W PIĄTKI LEŻĘ W WANNIE", "Paktofonika Chwile Ulotne", "Gibbs Pogoda Drinki Plaża"
   ],
 
-  // --- ARTYŚCI (10 RUND - PRECYZYJNE LISTY) ---
+  // --- ARTYŚCI (5 RUND) ---
   
+  'artist-otsochodzi': [
+    "Otsochodzi Nie, nie", "Otsochodzi Nowy Kolor", "Otsochodzi WWA Melanż", "Otsochodzi Nigdy już nie będzie jak kiedyś", "Otsochodzi Dla mnie",
+    "Otsochodzi Wszystko co mam", "Otsochodzi Kevin", "Otsochodzi Sezon", "Otsochodzi Euforia", "Otsochodzi Tarcho Terror",
+    "Otsochodzi Mów", "Otsochodzi 300 BANIEK", "Otsochodzi Luty", "Otsochodzi RAP", "Otsochodzi WSZYSTKO MIJA",
+    "Otsochodzi PULL UP", "Otsochodzi Ocean", "Otsochodzi Worki w tłum", "Otsochodzi Bon Voyage", "Otsochodzi Vanilla Sky"
+  ],
+
   'artist-kanye': [
     "Kanye West Father Stretch My Hands Pt. 1", "Kanye West Devil In A New Dress", "Kanye West God Is", "Kanye West CARNIVAL",
     "Kanye West Through The Wire", "Kanye West All Of The Lights", "Kanye West Everything I Am", "Kanye West True Love",
@@ -191,10 +197,13 @@ export async function GET(request: Request) {
     // Jeśli nie ma kategorii, bierzemy domyślnie Pop
     const tracksList = (category && CATEGORIES[category]) ? CATEGORIES[category] : CATEGORIES['pop-global-now'];
     
-    // --- WSZYSTKO JEST PLAYLISTĄ (Sztywne tytuły) ---
-    
-    // Losujemy 30 pozycji z listy, żeby mieć z czego wybierać
-    const shuffledTerms = tracksList.sort(() => 0.5 - Math.random()).slice(0, 30);
+    // --- TRYB TYLKO PLAYLISTA (Zawsze dla wszystkich) ---
+    // Decyzja ile piosenek losować do puli roboczej:
+    const isArtist = category?.startsWith('artist-');
+    const songsToFetch = isArtist ? 25 : 35; // Pobieramy więcej, żeby mieć zapas na błędne wyniki
+
+    // Mieszamy listę i bierzemy X pierwszych
+    const shuffledTerms = tracksList.sort(() => 0.5 - Math.random()).slice(0, songsToFetch);
     
     // Pobieramy każdą piosenkę DOKŁADNIE PO NAZWIE (Artist - Title)
     const promises = shuffledTerms.map(term => 
@@ -206,7 +215,7 @@ export async function GET(request: Request) {
 
     const results = await Promise.all(promises);
     
-    // Filtrujemy tylko te, które się udało pobrać i mają podgląd audio
+    // Filtrujemy tylko poprawne wyniki z audio
     const validSongs = results.filter(item => item !== null && item !== undefined && item.previewUrl);
 
     return NextResponse.json({ results: validSongs });

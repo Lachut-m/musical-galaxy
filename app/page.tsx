@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Space_Grotesk } from 'next/font/google'
 
-// STYL AESTHETIC
 const spaceFont = Space_Grotesk({ 
   weight: '700', 
   subsets: ['latin'],
@@ -12,7 +11,7 @@ const spaceFont = Space_Grotesk({
 // --- KONFIGURACJA ---
 const ROUND_TIME = 30;
 
-// --- DANE (Czyste nazwy) ---
+// --- DANE ---
 const CATEGORIES_LIST = [
   { id: 'polski-rap-modern', name: 'Polski Rap', gradient: 'linear-gradient(135deg, #141E30, #243B55)', icon: '🎤' },
   { id: 'dad-music', name: 'Dad Music', gradient: 'linear-gradient(135deg, #2C3E50, #4CA1AF)', icon: '🎸' },
@@ -30,6 +29,7 @@ const ARTIST_CATEGORIES = [
   { id: 'artist-kanye', name: 'Kanye West', gradient: 'linear-gradient(to right, #3C3B3F, #605C3C)', icon: '🐻' },
   { id: 'artist-travis', name: 'Travis Scott', gradient: 'linear-gradient(to right, #56ab2f, #a8e063)', icon: '🌵' },
   { id: 'artist-weeknd', name: 'The Weeknd', gradient: 'linear-gradient(to right, #480048, #C04848)', icon: '🕶️' },
+  { id: 'artist-otsochodzi', name: 'Otsochodzi', gradient: 'linear-gradient(to right, #2980B9, #6DD5FA)', icon: '🧢' },
   { id: 'artist-podsiadlo', name: 'Dawid Podsiadło', gradient: 'linear-gradient(to right, #24C6DC, #514A9D)', icon: '🥸' },
   { id: 'artist-sanah', name: 'Sanah', gradient: 'linear-gradient(to right, #BA5370, #F4E2D8)', icon: '🎻' },
   { id: 'artist-taco', name: 'Taco Hemingway', gradient: 'linear-gradient(to right, #000428, #004e92)', icon: '🍷' },
@@ -37,7 +37,7 @@ const ARTIST_CATEGORIES = [
   { id: 'artist-queen', name: 'Queen', gradient: 'linear-gradient(to right, #870000, #190A05)', icon: '👑' },
 ];
 
-// --- INTERAKTYWNY NAPIS ---
+// --- INTERAKTYWNY NAPIS (Wersja 13.0) ---
 const InteractiveTitle = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -311,8 +311,9 @@ export default function Home() {
     setSongsPool([]); 
     setHasStarted(false);
     
+    // Ustawienie liczby rund (5 dla artystów, 15 dla reszty)
     if (categoryId.startsWith('artist-')) {
-        setRoundsTarget(10);
+        setRoundsTarget(5);
     } else {
         setRoundsTarget(15);
     }
@@ -329,7 +330,7 @@ export default function Home() {
       const data = await res.json();
       const validSongs = data.results.filter((item: any) => item.previewUrl && item.trackName);
       
-      const target = categoryId.startsWith('artist-') ? 10 : 15;
+      const target = categoryId.startsWith('artist-') ? 5 : 15;
 
       if (validSongs.length >= target) {
           setSongsPool(validSongs.slice(0, target));
@@ -568,28 +569,7 @@ export default function Home() {
                 {gameState === "PLAYING" && (
                   <>
                     <form id="guess-form" onSubmit={handleSubmit}>
-                      <input 
-                        ref={inputRef} 
-                        type="text" 
-                        value={userGuess} 
-                        onChange={(e) => setUserGuess(e.target.value)} 
-                        placeholder="Wpisz tytuł lub wykonawcę..." 
-                        autoComplete="off" 
-                        style={{ 
-                          width: "100%", 
-                          padding: "15px", 
-                          borderRadius: "10px", 
-                          background: "rgba(0,0,0,0.5)", 
-                          color: "white", 
-                          fontSize: "1.2rem", 
-                          outline: "none", 
-                          textAlign: "center", 
-                          border: "1px solid rgba(255,255,255,0.2)", 
-                          transition: "0.3s" 
-                        }} 
-                        onFocus={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"} 
-                        onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
-                      />
+                      <input ref={inputRef} type="text" value={userGuess} onChange={(e) => setUserGuess(e.target.value)} placeholder="Wpisz tytuł lub wykonawcę..." autoComplete="off" style={{ width: "100%", padding: "15px", borderRadius: "10px", border: "none", background: "rgba(0,0,0,0.5)", color: "white", fontSize: "1.2rem", outline: "none", textAlign: "center", border: "1px solid rgba(255,255,255,0.2)" }} />
                       <div style={{ marginTop: "10px", color: "#ed4245", minHeight: "24px", fontWeight: "bold", textShadow: "0 0 5px rgba(237, 66, 69, 0.5)" }}>{feedback}</div>
                     </form>
                     
