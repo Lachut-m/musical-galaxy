@@ -67,10 +67,10 @@ const CATEGORIES: Record<string, string[]> = {
   // --- ARTYŚCI (5 RUND - TOP HITY) ---
   
   'artist-otsochodzi': [
-    "Otsochodzi Nie, nie", "Otsochodzi Nowy Kolor", "Otsochodzi WWA Melanż", "Otsochodzi Nigdy już nie będzie jak kiedyś", "Otsochodzi Dla mnie",
-    "Otsochodzi Wszystko co mam", "Otsochodzi Kevin", "Otsochodzi Sezon", "Otsochodzi Euforia", "Otsochodzi Tarcho Terror",
-    "Otsochodzi Mów", "Otsochodzi 300 BANIEK", "Otsochodzi Luty", "Otsochodzi RAP", "Otsochodzi WSZYSTKO MIJA",
-    "Otsochodzi PULL UP", "Otsochodzi Ocean", "Otsochodzi Worki w tłum", "Otsochodzi Bon Voyage", "Otsochodzi Vanilla Sky"
+    "Otsochodzi Nie, nie", "Otsochodzi Nowy Kolor", "Otsochodzi WWA Melanż", 
+     "Otsochodzi Euforia", "Otsochodzi Tarcho Terror", "OIO amerykańskie teledyski", "OIO MVP",
+     "Otsochodzi 300 BANIEK", "Otsochodzi Luty", "Otsochodzi RAP",
+     "Otsochodzi Worki w tłum", "Otsochodzi Luty", "Otsochodzi tak to leciało", "Otsochodzi Przypadkiem", "Otsochodzi Kiedys cie znajde"
   ],
 
   'artist-kanye': [
