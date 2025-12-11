@@ -25,15 +25,16 @@ const CATEGORIES_LIST = [
 ];
 
 const ARTIST_CATEGORIES = [
-  { id: 'artist-eminem', name: 'Eminem', gradient: 'linear-gradient(to right, #000000, #434343)', icon: '🧔🏻‍♂️' },
-  { id: 'artist-weeknd', name: 'The Weeknd', gradient: 'linear-gradient(to right, #480048, #C04848)', icon: '🕶️' },
-  { id: 'artist-sanah', name: 'Sanah', gradient: 'linear-gradient(to right, #BA5370, #F4E2D8)', icon: '🎻' },
-  { id: 'artist-queen', name: 'Queen', gradient: 'linear-gradient(to right, #870000, #190A05)', icon: '👑' },
-  { id: 'artist-taco', name: 'Taco Hemingway', gradient: 'linear-gradient(to right, #000428, #004e92)', icon: '🍷' },
-  { id: 'artist-kukon', name: 'Kukon', gradient: 'linear-gradient(to right, #200122, #6f0000)', icon: '🌑' },
-  { id: 'artist-bambi', name: 'bambi', gradient: 'linear-gradient(to right, #fc00ff, #00dbde)', icon: '💖' },
+  { id: 'artist-kendrick', name: 'Kendrick Lamar', gradient: 'linear-gradient(to right, #000000, #434343)', icon: '👑' },
+  { id: 'artist-eminem', name: 'Eminem', gradient: 'linear-gradient(to right, #232526, #414345)', icon: '🧔🏻‍♂️' },
   { id: 'artist-kanye', name: 'Kanye West', gradient: 'linear-gradient(to right, #3C3B3F, #605C3C)', icon: '🐻' },
   { id: 'artist-travis', name: 'Travis Scott', gradient: 'linear-gradient(to right, #56ab2f, #a8e063)', icon: '🌵' },
+  { id: 'artist-weeknd', name: 'The Weeknd', gradient: 'linear-gradient(to right, #480048, #C04848)', icon: '🕶️' },
+  { id: 'artist-podsiadlo', name: 'Dawid Podsiadło', gradient: 'linear-gradient(to right, #24C6DC, #514A9D)', icon: '🥸' },
+  { id: 'artist-sanah', name: 'Sanah', gradient: 'linear-gradient(to right, #BA5370, #F4E2D8)', icon: '🎻' },
+  { id: 'artist-taco', name: 'Taco Hemingway', gradient: 'linear-gradient(to right, #000428, #004e92)', icon: '🍷' },
+  { id: 'artist-kukon', name: 'Kukon', gradient: 'linear-gradient(to right, #200122, #6f0000)', icon: '🌑' },
+  { id: 'artist-queen', name: 'Queen', gradient: 'linear-gradient(to right, #870000, #190A05)', icon: '👑' },
 ];
 
 // --- INTERAKTYWNY NAPIS ---
@@ -567,7 +568,6 @@ export default function Home() {
                 {gameState === "PLAYING" && (
                   <>
                     <form id="guess-form" onSubmit={handleSubmit}>
-                      {/* --- NAPRAWIONY INPUT --- */}
                       <input 
                         ref={inputRef} 
                         type="text" 
@@ -584,7 +584,7 @@ export default function Home() {
                           fontSize: "1.2rem", 
                           outline: "none", 
                           textAlign: "center", 
-                          border: "1px solid rgba(255,255,255,0.2)", // Poprawiony border (tylko raz)
+                          border: "1px solid rgba(255,255,255,0.2)", 
                           transition: "0.3s" 
                         }} 
                         onFocus={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"} 

@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
 
-// BAZA DANYCH - SZTYWNE LISTY UTWORÓW (Autor - Tytuł)
-// Serwer szuka DOKŁADNIE tych fraz, więc nie ma mowy o pomyłkach.
+// 1. BAZA DANYCH - SZTYWNE LISTY
 const CATEGORIES: Record<string, string[]> = {
   
-  // --- TWOJE PLAYLISTY ---
-  
+  // --- PLAYLISTY (15 RUND) ---
   'dad-music': [
     "Scorpions Wind Of Change", "Journey Don't Stop Believin'", "Aerosmith Dream On", "Foreigner I Want to Know What Love Is", "U2 With Or Without You", 
     "Red Hot Chili Peppers Snow (Hey Oh)", "U2 I Still Haven't Found What I'm Looking For", "Kansas Dust in the Wind", "The Police Roxanne", 
@@ -59,44 +57,53 @@ const CATEGORIES: Record<string, string[]> = {
     "730 Huncho Ona Mówi", "SVM!R MIEJSKI MARATON", "Bedoes 2115 Nadchodzi lato", "OKI NA ZAWSZE MAŁOLAT", "Sentino MARBELLA", "SVM!R MONOPOL", 
     "Waima RING RING", "Malik Montana Dior", "Kaz Bałagane Trendsetter", "OKI Jeżyk", "OKI JEREMY SOCHAN", "Otsochodzi WSZYSTKO MIJA", 
     "wiktorek no i poszło", "Young Igi Bestia", "Rogal DDL Dziwki Dragi Lasery", "vkie DAM CI PORADY", "Aleshen Atlanta", 
-    "2115 TURYSTA", "Żabson PRZEKAZ MYŚLI", "Kizo Fitness", "bambi TO NIE MA ZNACZENIA", "Malik Montana 911", "Żabson Nie mam czasu na wakacje", 
+    "2115 TURYSTA", "Żabson PRZEKAZ MYŚLI", "Kizo Fitness", "Malik Montana 911", "Żabson Nie mam czasu na wakacje", 
     "Kali 30 km/h", "Avi AMG", "Malik Montana Rundki", "OKI SPRZEDAŁEM SIĘ", "Diho Szyby", "club2020 Landlord", "White 2115 18", 
     "Dudek P56 California", "Sentino Rio", "OKI AGENT47", "Yung Adisz WWA NA KXKSIE", "Młody West Bez promo", "Mata To tylko wiosna", 
     "OKI Worki W Tłum", "Żabson Trapczan", "slowez NIE BĘDĘ ZA NIC PRZEPRASZAĆ", "Małach Nie dbam", "Rufuz PANAMA", "Medusa GLOW UP", 
     "Malik Montana Generał", "Taco Hemingway W PIĄTKI LEŻĘ W WANNIE", "Paktofonika Chwile Ulotne", "Gibbs Pogoda Drinki Plaża"
   ],
 
-  // --- ARTYŚCI (Sztywne listy, koniec z randomem) ---
+  // --- ARTYŚCI (5 RUND - TOP HITY) ---
   
-  'artist-bambi': [
-    "bambi IRL", "bambi Mill", "Young Leosia BFF", "bambi Big Big Girl", "bambi Nie ma Cię", 
-    "Young Leosia PG$", "bambi Grawitacja", "bambi Karate Kid", "bambi Latawce", "bambi Przestępstwo",
-    "bambi Madonna", "bambi CHYBA WIEM", "bambi KARUZELE", "bambi PASEK", "bambi Riry", 
-    "bambi We are the world", "bambi B.I.G", "bambi Szaleństwo", "bambi Dziś", "bambi Intro",
-    "bambi CLOUDS", "bambi RED BULL 64 BARS", "bambi ZA DUŻO W SZYJE", "SB Maffija Bad Bunny",
-    "bambi NUMBER ONE", "bambi Skippers", "bambi chrypki głos nie od fajek", "bambi Papier",
-    "bambi Bletki", "bambi ICON", "CatchUp Kot Schrödingera", "Dina Ayada 100 Bands", 
-    "SB Maffija COLD BOY WINNER", "Young Leosia Dobra Robota", "Young Leosia Headhunter", 
-    "Waima Chwile", "SB Maffija Zamki z piasku", "bambi WIDZIAŁAM JUŻ WSZYSTKO", "francis 1DAY IN LA", 
-    "Kubi Producent Woda Księżycowa", "bambi RUW BAMBICZE", "kuqe 2115 zostań proszę", "bambi LECĘ BO CHCĘ",
-    "Young Leosia Te numery", "bambi TLEN", "bambi NIE CHCESZ MNIE", "Young Igi KSZTAŁT MIŁOŚCI", "bambi VUELO", "Young Leosia Double Match"
+  'artist-otsochodzi': [
+    "Otsochodzi Nie, nie", "Otsochodzi Nowy Kolor", "Otsochodzi WWA Melanż", "Otsochodzi Nigdy już nie będzie jak kiedyś", "Otsochodzi Dla mnie",
+    "Otsochodzi Wszystko co mam", "Otsochodzi Kevin", "Otsochodzi Sezon", "Otsochodzi Euforia", "Otsochodzi Tarcho Terror",
+    "Otsochodzi Mów", "Otsochodzi 300 BANIEK", "Otsochodzi Luty", "Otsochodzi RAP", "Otsochodzi WSZYSTKO MIJA",
+    "Otsochodzi PULL UP", "Otsochodzi Ocean", "Otsochodzi Worki w tłum", "Otsochodzi Bon Voyage", "Otsochodzi Vanilla Sky"
   ],
 
   'artist-kanye': [
-    "Kanye West Father Stretch My Hands Pt. 1", "Kanye West Devil In A New Dress", "Kanye West God Is", 
-    "Kanye West CARNIVAL", "Kanye West Through The Wire", "Kanye West All Of The Lights", 
-    "Kanye West Everything I Am", "Kanye West True Love", "Kanye West No Church In The Wild", 
-    "Kanye West POWER", "Kanye West Follow God", "Kanye West BURN", "Kanye West Jukebox Joints", 
-    "Kanye West On Sight", "Kanye West Slow Jamz", "Kanye West Monster", "Kanye West FIELD TRIP", 
-    "Kanye West Saint Pablo", "Kanye West Jesus Walks", "Kanye West Moon", "Kanye West Black Skinhead", 
-    "Kanye West Otis", "Kanye West Family Business", "Kanye West Praise God", "Kanye West Erase Me", 
-    "Kanye West Why I Love You", "Kanye West Flashing Lights", "Kanye West Heartless", 
-    "Kanye West All Falls Down", "Kanye West Violent Crimes", "Kanye West Homecoming", 
-    "Kanye West Bound 2", "Kanye West FourFiveSeconds", "Kanye West Ghost Town", "Kanye West I Wonder", 
-    "Kanye West Gold Digger", "Kanye West Ni**as In Paris", "Kanye West Run This Town", 
-    "Kanye West Can't Tell Me Nothing", "Kanye West Runaway", "Kanye West Touch The Sky", 
-    "Kanye West American Boy", "Kanye West Stronger", "Kanye West Gorgeous", "Kanye West Still Dreaming", 
-    "Kanye West Famous", "Kanye West E.T.", "Kanye West Roses", "Kanye West No More Parties In LA"
+    "Kanye West Father Stretch My Hands Pt. 1", "Kanye West Devil In A New Dress", "Kanye West God Is", "Kanye West CARNIVAL",
+    "Kanye West Through The Wire", "Kanye West All Of The Lights", "Kanye West Everything I Am", "Kanye West True Love",
+    "JAY-Z No Church In The Wild", "Kanye West POWER", "Kanye West Follow God", "Kanye West BURN", "Kanye West Jukebox Joints",
+    "Kanye West On Sight", "Twista Slow Jamz", "Kanye West Monster", "Kanye West FIELD TRIP", "Kanye West Saint Pablo",
+    "Kanye West Jesus Walks", "Kanye West Moon", "Kanye West Black Skinhead", "Kanye West Otis", "Kanye West Family Business",
+    "Kanye West Praise God", "Kid Cudi Erase Me", "JAY-Z Why I Love You", "Kanye West Gorgeous", "Nas Still Dreaming",
+    "Kanye West Famous", "Katy Perry E.T.", "Kanye West Roses", "Kanye West No More Parties In LA", "Kanye West Flashing Lights",
+    "Kanye West Heartless", "Kanye West All Falls Down", "Kanye West Violent Crimes", "Kanye West Homecoming", "Kanye West Bound 2",
+    "Rihanna FourFiveSeconds", "Kanye West Ghost Town", "Kanye West I Wonder", "Kanye West Gold Digger", "JAY-Z Ni**as In Paris",
+    "JAY-Z Run This Town", "Kanye West Can't Tell Me Nothing", "Kanye West Runaway", "Kanye West Touch The Sky", "Estelle American Boy",
+    "Kanye West Stronger"
+  ],
+
+  'artist-kendrick': [
+    "Kendrick Lamar HUMBLE.", "Kendrick Lamar DNA.", "Kendrick Lamar Swimming Pools (Drank)", "Kendrick Lamar Alright", "Kendrick Lamar King Kunta",
+    "Kendrick Lamar Bitch, Don't Kill My Vibe", "Kendrick Lamar Money Trees", "Kendrick Lamar LOVE. FEAT. ZACARI", "Kendrick Lamar LOYALTY. FEAT. RIHANNA", 
+    "Kendrick Lamar All The Stars", "Kendrick Lamar N95", "Kendrick Lamar United In Grief", "Kendrick Lamar Father Time", "Kendrick Lamar Rich Spirit",
+    "Kendrick Lamar Count Me Out", "Kendrick Lamar Silent Hill", "Kendrick Lamar m.A.A.d city", "Kendrick Lamar Poetic Justice", 
+    "Kendrick Lamar i", "Kendrick Lamar King's Dead", "Kendrick Lamar Family Ties", "Kendrick Lamar ELEMENT.", "Kendrick Lamar YAH.",
+    "Kendrick Lamar FEAR.", "Kendrick Lamar GOD.", "Kendrick Lamar DUCKWORTH.", "Kendrick Lamar Backseat Freestyle", "Kendrick Lamar A.D.H.D",
+    "Kendrick Lamar HiiiPoWeR", "Kendrick Lamar Wesley's Theory", "Kendrick Lamar For Free?", "Kendrick Lamar Institutionalized", "Kendrick Lamar The Blacker The Berry"
+  ],
+
+  'artist-podsiadlo': [
+    "Dawid Podsiadło Małomiasteczkowy", "Dawid Podsiadło Nie ma fal", "Dawid Podsiadło Trofea", "Dawid Podsiadło Najnowszy klip", "Dawid Podsiadło Matylda",
+    "Dawid Podsiadło Pastempomat", "Dawid Podsiadło W dobrą stronę", "Dawid Podsiadło Trójkąty i kwadraty", "Dawid Podsiadło Nieznajomy", "Dawid Podsiadło mori",
+    "Dawid Podsiadło To co masz Ty!", "Dawid Podsiadło D I A B L E", "Dawid Podsiadło wirus", "Dawid Podsiadło millenium", "Dawid Podsiadło Szarość i róż",
+    "Dawid Podsiadło O czym śnisz?", "Dawid Podsiadło Rozpoznaję w Tobie coś", "Dawid Podsiadło Co mówimy?", "Dawid Podsiadło Nie kłami", "Dawid Podsiadło POST",
+    "Dawid Podsiadło Halo", "Dawid Podsiadło Fantasmagoria", "Dawid Podsiadło Ostatnia nadzieja", "Dawid Podsiadło I Ciebie też, bardzo", "Dawid Podsiadło Całe szczęście",
+    "Dawid Podsiadło PKP", "Dawid Podsiadło Bóg", "Dawid Podsiadło Projekt 19", "Dawid Podsiadło No", "Dawid Podsiadło Forest", "Dawid Podsiadło Lis", "Dawid Podsiadło Bela"
   ],
 
   'artist-eminem': [
@@ -149,6 +156,7 @@ const CATEGORIES: Record<string, string[]> = {
     "Travis Scott Mamacita", "Travis Scott Upper Echelon", "Travis Scott Gatti"
   ],
 
+  // --- KATEGORIE GATUNKOWE (TEŻ RĘCZNE DLA PEWNOŚCI) ---
   'usa-rap-modern': [
     "Travis Scott Sicko Mode", "Drake God's Plan", "Kendrick Lamar HUMBLE.", "Post Malone Rockstar", "The Weeknd Starboy", 
     "Kanye West Stronger", "Future Mask Off", "21 Savage Bank Account", "Doja Cat Paint The Town Red", "Playboi Carti Magnolia",
